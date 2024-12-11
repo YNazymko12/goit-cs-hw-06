@@ -1,0 +1,29 @@
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: web_app-mongo
+    restart: always
+    ports:
+      - '27020:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build:
+      context: .
+    container_name: web_app-app
+    restart: always
+    ports:
+      - '3000:3000'
+      - '6000:6000'
+    depends_on:
+      - mongo
+    volumes:
+      - .:/my_app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    env_file:
+      - .env
+
+volumes:
+  mongodb_data:
